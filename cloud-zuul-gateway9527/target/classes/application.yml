@@ -1,0 +1,35 @@
+server:
+  port: 9527
+
+spring:
+  application:
+    name: cloud-zuul-gateway
+
+eureka:
+  client:
+    service-url:
+      #defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka,http://eureka7003.com:7003/eureka
+      defaultZone: http://eureka7001.com:7001/eureka
+  instance:
+    instance-id: gateway-9527.com
+    prefer-ip-address: true
+
+zuul:
+  ignored-services: cloud-payment-service #单个具体用
+  #ignored-services: "*"  #多个用
+  prefix: /yanjing  #设置统一公共前缀
+  routes:           #路由映射配置
+    mypayment.serviceId: cloud-payment-service
+    mypayment.path: /weixin/**
+    mysms.serviceId: cloud-provider-sms
+    mysms.path: /mysms/**
+  PreLogFilter: #开启过滤器,filter.PreLogFilter类
+    pre:
+      disable: true  #这里true有问题，不显示为黄色的字体不对
+
+# 开启查看路由的端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'routes'
